@@ -20,15 +20,34 @@ public class DragAndDrop : MonoBehaviour {
 
 	bool isDragging;
 
+  	Rigidbody m_Rigidbody;
+    Vector3 m_YAxis;
+
+
+
     void Start() {
         myMainCamera = Camera.main;
 
+ 		m_Rigidbody = GetComponent<Rigidbody>();
+        
 		shouldMove = true;
 
 		isDragging = false;
+
+	}
+
+	void Update()
+    { 
+		 if (shouldMove)
+        {
+           	m_Rigidbody.mass = 1;
+        } else {
+            m_Rigidbody.mass = 99999;
+		}
 	}
 
     void OnMouseDown() {
+		isDragging = true;
 
         dragPlane = new Plane(myMainCamera.transform.forward, transform.position);
         Ray camRay = myMainCamera.ScreenPointToRay(Input.mousePosition);
@@ -45,7 +64,7 @@ public class DragAndDrop : MonoBehaviour {
 	}
 
     void OnMouseDrag() {
-		isDragging = true;
+		
 
 		 Ray camRay = myMainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -64,6 +83,7 @@ public class DragAndDrop : MonoBehaviour {
 
 		
 	void OnCollisionEnter(Collision collision) {
+
 		if (collision.gameObject.tag == "Cube" && isDragging == false) {            
 			
 			Debug.Log ("You push me!");
@@ -73,7 +93,7 @@ public class DragAndDrop : MonoBehaviour {
 	}
 
 	void OnCollisionExit(Collision collision) {
-		if (collision.gameObject.tag == "Cube") {            
+		if (collision.gameObject.tag == "Cube" && isDragging == false) {             
 			Debug.Log ("You leave me!");
 
 			shouldMove = true;
